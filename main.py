@@ -28,8 +28,12 @@ state_writer = StateWriter()
 game_is_on = True
 win_status = False
 while game_is_on:
-    answer_state = screen.textinput(title = f"{state_count}/50 States Correct", prompt = "What's another state's name?")
+    answer_state = screen.textinput(title = f"{state_count}/50 States Correct", prompt = "What's another state's name? (or type 'exit' to give up)")
     cap_answer_state = string.capwords(answer_state)
+
+    if cap_answer_state == 'Exit':
+        break
+
     if cap_answer_state in remaining_states:
         #print("It is a U.S. state")
         state_row = state_data[state_data['state'] == cap_answer_state]
@@ -55,8 +59,15 @@ while game_is_on:
         #print("It is not a U.S. state")
         pass
 
-state_writer.end_screen(win_status)
+screen.tracer(0)
+state_writer.end_screen(win_status, remaining_states, state_data)
+screen.update()
 
+if win_status == False:
+    states_to_learn = pandas.DataFrame(remaining_states)
+    states_to_learn.columns = ['states']
+    #print(states_to_learn)
+    states_to_learn.to_csv('states_to_learn.csv')
 screen.exitonclick()
 
 
